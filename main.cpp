@@ -5,7 +5,7 @@
 
 #define _SSE_USED
 
-typedef double coord_t;
+typedef float coord_t;
 
 const coord_t   X0              = 400,
                 Y0              = 300,
@@ -52,18 +52,16 @@ int main()
             // !!! HEIGHT % SSE_ARR_SIZE must be 0 !!!
             for (coord_t yi = 0; yi < HEIGHT; yi += SSE_ARR_SIZE)
             {
-
-
-                for (int j = 0; j < SSE_ARR_SIZE; ++j) xi0[j] = (xi     - X0) / PXL_PER_UNIT;
-                for (int j = 0; j < SSE_ARR_SIZE; ++j) yi0[j] = (yi + j - Y0) / PXL_PER_UNIT;
-
-                for (int j = 0; j < SSE_ARR_SIZE; ++j) x[j] = xi0[j];
-                for (int j = 0; j < SSE_ARR_SIZE; ++j) y[j] = yi0[j];
-
-                for (int j = 0; j < SSE_ARR_SIZE; ++j) i[j] = 0;
-
                 for (int j = 0; j < SSE_ARR_SIZE; ++j)
                 {
+                    xi0[j] = (xi     - X0) / PXL_PER_UNIT;
+                    yi0[j] = (yi + j - Y0) / PXL_PER_UNIT;
+
+                    x[j] = xi0[j];
+                    y[j] = yi0[j];
+
+                    i[j] = 0;
+
                     for ( ; i[j] < MAX_ITERATIONS && (x[j] * x[j]) + (y[j] * y[j]) < R0_2; ++(i[j]))
                     {
                         old_x[j] = x[j];
