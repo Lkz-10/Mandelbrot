@@ -42,7 +42,8 @@ int main(const int argc, const char** argv)
     {
         if (Calculate(&lab_mode, image, &fps) != OK) return ERROR;
 
-        std::cout << "FPS = " << fps.nframes * CLOCKS_PER_SEC / (coord_t)(fps.total_time) << std::endl;
+        // std::cout << "nframes = " << fps.nframes << ", total_time = " << fps.total_time << " / " << CLOCKS_PER_SEC << std::endl;
+        std::cout << "FPS = " << fps.nframes * (coord_t)CLOCKS_PER_SEC / (coord_t)(fps.total_time) << std::endl;
     }
 
     return 0;
@@ -102,7 +103,7 @@ int SetMode(const char** argv, struct lab_mode_t* lab_mode)
     return OK;
 }
 
-int Calculate(struct lab_mode_t* lab_mode, sf::Image& image, fps_t* fps)
+int Calculate(const lab_mode_t* lab_mode, sf::Image& image, fps_t* fps)
 {
     if (!lab_mode)
     {

@@ -3,15 +3,22 @@
 
 #include "Globals.h"
 
-int  ArgCheck   (const int argc);
-int  SetMode    (const char** argv, struct lab_mode_t* lab_mode);
-int  Calculate  (struct lab_mode_t* lab_mode, sf::Image& image, fps_t* fps);
+//==================================== main.cpp ==========================================
+int         ArgCheck    (const int argc);
+int         SetMode     (const char** argv, struct lab_mode_t* lab_mode);
+int         Calculate   (const lab_mode_t* lab_mode, sf::Image& image, fps_t* fps);
 
-int SimpleCalc (int mode, sf::Image& image, fps_t* fps);
+//=================================== Simple.cpp =========================================
+int         SimpleCalc  (const int mode, sf::Image& image, fps_t* fps);
 
-int ArrayCalc(int mode, sf::Image& image, fps_t* fps);
-inline void CountArray(coord_t* x0, coord_t* y0, coord_t xi, coord_t yi, int mode, sf::Image& image);
-inline void CountPixel(coord_t* x, coord_t* y, coord_t* x0, coord_t* y0, coord_t xi, coord_t yi,
-                       int num, int* mask, int cnt, int mode, sf::Image& image);
+//=================================== Array.cpp ==========================================
+int         ArrayCalc   (const int mode, sf::Image& image, fps_t* fps);
+
+inline void CountArray  (const coord_t* x0, const coord_t* y0, const coord_t xi, const coord_t yi,
+                         const int mode, sf::Image& image);
+
+inline void CountPixel(volatile coord_t* x, volatile coord_t* y, const coord_t* x0,
+                       const coord_t* y0, const coord_t xi, const coord_t yi, const int num,
+                       int* mask, const int cnt, const int mode, sf::Image& image);
 
 #endif

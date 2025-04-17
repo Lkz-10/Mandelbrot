@@ -1,6 +1,6 @@
 #include "../include/Calculations.h"
 
-int SimpleCalc(int mode, sf::Image& image, fps_t* fps)
+int SimpleCalc(const int mode, sf::Image& image, fps_t* fps)
 {
     if (!fps)
     {
@@ -38,6 +38,8 @@ int SimpleCalc(int mode, sf::Image& image, fps_t* fps)
 
     fps->total_time += fps->finish - fps->start;
     (fps->nframes)++;
+
+    if (fps->total_time < MIN_TIME) SimpleCalc(mode, image, fps);
 
     //std::cerr << "fps: " << nframes * CLOCKS_PER_SEC / (coord_t)(end - start) << std::endl;
 
