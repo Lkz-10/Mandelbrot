@@ -125,6 +125,12 @@ int Calculate(const lab_mode_t* lab_mode, sf::Image& image, fps_t* fps)
             break;
         }
 
+        case SIMD:
+        {
+            SIMDCalc(lab_mode->mode, image, fps);
+            break;
+        }
+
         default:
         {
             fprintf(stderr, "Calculate() error: wrong version: %d\n", lab_mode->version);

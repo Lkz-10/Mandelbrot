@@ -10,9 +10,9 @@ int SimpleCalc(const int mode, sf::Image& image, fps_t* fps)
 
     fps->start = clock();
 
-    for (coord_t xi = 0; xi < WIDTH; ++xi)
+    for (coord_t yi = 0; yi < HEIGHT; ++yi)
     {
-        for (coord_t yi = 0; yi < HEIGHT; ++yi)
+        for (coord_t xi = 0; xi < WIDTH; ++xi)
         {
             coord_t xi0 = (xi - X0) / PXL_PER_UNIT,
                     yi0 = (yi - Y0) / PXL_PER_UNIT,

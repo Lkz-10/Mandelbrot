@@ -6,6 +6,7 @@
 #include <math.h>
 #include <ctime>
 #include <SFML/Graphics.hpp>
+#include <xmmintrin.h>
 
 // #define _SSE_USED
 
@@ -27,13 +28,14 @@ typedef float coord_t;
 
 const coord_t   X0              = 400,
                 Y0              = 300,
+                PXL_PER_UNIT    = 260,
                 R0_2            = 100;
 
-const int       ARR_SIZE        = 16 / sizeof(coord_t),
+const int       ARR_SIZE        = 16 / sizeof(coord_t), // HEIGHT % ARR_SIZE must equal 0
                 MAX_ITERATIONS  = 256,
                 WIDTH           = 600,
                 HEIGHT          = 600,
-                PXL_PER_UNIT    = 260,
+
                 MIN_TIME        = 5 * CLOCKS_PER_SEC;
 
 // const char*     WINDOW_NAME         = "The Mandelbrot set";

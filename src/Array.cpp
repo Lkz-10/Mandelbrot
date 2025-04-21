@@ -10,20 +10,20 @@ int ArrayCalc(const int mode, sf::Image& image, fps_t* fps)
 
     fps->start = clock();
 
-    for (coord_t xi = 0; xi < WIDTH; ++xi)
+    for (coord_t yi = 0; yi < HEIGHT; ++yi)
     {
-        coord_t xi0[ARR_SIZE] = {};
+        coord_t yi0[ARR_SIZE] = {};
         for (int i = 0; i < ARR_SIZE; ++i)
         {
-            xi0[i] = (xi - X0) / PXL_PER_UNIT;
+            yi0[i] = (yi - Y0) / PXL_PER_UNIT;
         }
 
-        for (coord_t yi = 0; yi < HEIGHT; yi += ARR_SIZE)
+        for (coord_t xi = 0; xi < WIDTH; xi += ARR_SIZE)
         {
-            coord_t yi0[ARR_SIZE] = {};
+            coord_t xi0[ARR_SIZE] = {};
             for (int i = 0; i < ARR_SIZE; ++i)
             {
-                yi0[i] = (yi + i - Y0) / PXL_PER_UNIT;
+                xi0[i] = (xi + i - X0) / PXL_PER_UNIT;
             }
 
             CountArray(xi0, yi0, xi, yi, mode, image);
@@ -80,7 +80,7 @@ inline void CountPixel(volatile coord_t* x, volatile coord_t* y, const coord_t* 
             *mask |= (1 << num);
             if (mode == GRAPHICS)
             {
-                image.setPixel(xi, yi, sf::Color((cnt*10) % 256, 0, (255-cnt) / 3));
+                image.setPixel(xi + num, yi, sf::Color((cnt*10) % 256, 0, (255-cnt) / 3));
             }
         }
     }
