@@ -1,6 +1,6 @@
 #include "../include/Calculations.h"
 
-int SimpleCalc(const int mode, sf::Image& image, fps_t* fps)
+int SimpleCalc(const int mode, const scale_t scale, sf::Image& image, fps_t* fps)
 {
     if (!fps)
     {
@@ -14,8 +14,8 @@ int SimpleCalc(const int mode, sf::Image& image, fps_t* fps)
     {
         for (coord_t xi = 0; xi < WIDTH; ++xi)
         {
-            coord_t xi0 = (xi - X0) / PXL_PER_UNIT,
-                    yi0 = (yi - Y0) / PXL_PER_UNIT,
+            coord_t xi0 = (xi - scale.x0) / scale.pxl_size,
+                    yi0 = (yi - scale.y0) / scale.pxl_size,
                     x   = xi0,
                     y   = yi0;
 
@@ -28,7 +28,13 @@ int SimpleCalc(const int mode, sf::Image& image, fps_t* fps)
                 y = 2*old_x*y + yi0;
             }
 
-            if (mode == CALCULATIONS || i == MAX_ITERATIONS) continue;
+            if (mode == CALCULATIONS) continue;
+
+            if (i == MAX_ITERATIONS)
+            {
+                image.setPixel(xi, yi, sf::Color::Black);
+                continue;
+            }
 
             image.setPixel(xi, yi, sf::Color((i*10) % 256, 0, (255-i) / 3));
         }
@@ -39,9 +45,7 @@ int SimpleCalc(const int mode, sf::Image& image, fps_t* fps)
     fps->total_time += fps->finish - fps->start;
     (fps->nframes)++;
 
-    if (fps->total_time < MIN_TIME) SimpleCalc(mode, image, fps);
-
-    //std::cerr << "fps: " << nframes * CLOCKS_PER_SEC / (coord_t)(end - start) << std::endl;
+    if (mode == CALCULATIONS && fps->total_time < MIN_TIME) SimpleCalc(mode, scale, image, fps);
 
     return OK;
 }

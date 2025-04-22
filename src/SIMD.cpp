@@ -1,6 +1,6 @@
 #include "../include/Calculations.h"
 
-int SIMDCalc(const int mode, sf::Image& image, fps_t* fps)
+int SIMDCalc(const int mode, const scale_t scale, sf::Image& image, fps_t* fps)
 {
     if (!fps)
     {
@@ -14,14 +14,14 @@ int SIMDCalc(const int mode, sf::Image& image, fps_t* fps)
 
     for (coord_t yi = 0; yi < HEIGHT; ++yi)
     {
-        __m128 yi0 = _mm_set_ps1((yi - Y0) / PXL_PER_UNIT);
+        __m128 yi0 = _mm_set_ps1((yi - scale.y0) / scale.pxl_size);
 
         for (coord_t xi = 0; xi < WIDTH; xi += ARR_SIZE)
         {
-            __m128 xi0 = _mm_set_ps((xi + 3 - X0) / PXL_PER_UNIT,
-                                    (xi + 2 - X0) / PXL_PER_UNIT,
-                                    (xi + 1 - X0) / PXL_PER_UNIT,
-                                    (xi     - X0) / PXL_PER_UNIT);
+            __m128 xi0 = _mm_set_ps((xi + 3 - scale.x0) / scale.pxl_size,
+                                    (xi + 2 - scale.x0) / scale.pxl_size,
+                                    (xi + 1 - scale.x0) / scale.pxl_size,
+                                    (xi     - scale.x0) / scale.pxl_size);
 
             volatile __m128 x = xi0, y = yi0;
             __m128i iter = _mm_setzero_si128();
@@ -62,7 +62,19 @@ int SIMDCalc(const int mode, sf::Image& image, fps_t* fps)
                         }
                     }
                 }
+
                 iter = _mm_add_epi32(iter, _mm_set_epi32(1, 1, 1, 1));
+            }
+
+            if (mode == GRAPHICS && mask != (1 << ARR_SIZE) - 1)
+            {
+                for (int i = 0; i < ARR_SIZE; ++i)
+                {
+                    if (!(mask & (1 << i)))
+                    {
+                        image.setPixel(xi + i, yi, sf::Color::Black);
+                    }
+                }
             }
         }
     }
@@ -71,7 +83,7 @@ int SIMDCalc(const int mode, sf::Image& image, fps_t* fps)
     fps->total_time += fps->finish - fps->start;
     (fps->nframes)++;
 
-    if (fps->total_time < MIN_TIME) SIMDCalc(mode, image, fps);
+    if (mode == CALCULATIONS && fps->total_time < MIN_TIME) SIMDCalc(mode, scale, image, fps);
 
     return OK;
 }

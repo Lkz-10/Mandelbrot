@@ -1,6 +1,6 @@
 CXX := g++
 
-CXX_FLAGS 	:= -O3 -mavx2 -I ./include/ -flto
+CXX_FLAGS 	:= -O3 -mavx2 -flto
 LD_FLAGS 	:= -lsfml-graphics -lsfml-window -lsfml-system
 
 SRC_DIR 	:= src

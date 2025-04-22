@@ -1,6 +1,6 @@
 #include "../include/Calculations.h"
 
-int ArrayCalc(const int mode, sf::Image& image, fps_t* fps)
+int ArrayCalc(const int mode, const scale_t scale, sf::Image& image, fps_t* fps)
 {
     if (!fps)
     {
@@ -15,7 +15,7 @@ int ArrayCalc(const int mode, sf::Image& image, fps_t* fps)
         coord_t yi0[ARR_SIZE] = {};
         for (int i = 0; i < ARR_SIZE; ++i)
         {
-            yi0[i] = (yi - Y0) / PXL_PER_UNIT;
+            yi0[i] = (yi - scale.y0) / scale.pxl_size;
         }
 
         for (coord_t xi = 0; xi < WIDTH; xi += ARR_SIZE)
@@ -23,7 +23,7 @@ int ArrayCalc(const int mode, sf::Image& image, fps_t* fps)
             coord_t xi0[ARR_SIZE] = {};
             for (int i = 0; i < ARR_SIZE; ++i)
             {
-                xi0[i] = (xi + i - X0) / PXL_PER_UNIT;
+                xi0[i] = (xi + i - scale.x0) / scale.pxl_size;
             }
 
             CountArray(xi0, yi0, xi, yi, mode, image);
@@ -35,7 +35,7 @@ int ArrayCalc(const int mode, sf::Image& image, fps_t* fps)
     fps->total_time += fps->finish - fps->start;
     (fps->nframes)++;
 
-    if (mode == CALCULATIONS && fps->total_time < MIN_TIME) ArrayCalc(mode, image, fps);
+    if (mode == CALCULATIONS && fps->total_time < MIN_TIME) ArrayCalc(mode, scale, image, fps);
 
     return OK;
 }
@@ -61,6 +61,11 @@ inline void CountArray(const coord_t* x0, const coord_t* y0, const coord_t xi, c
             CountPixel(x, y, x0, y0, xi, yi + i, i, &mask, cnt, mode, image);
         }
     }
+
+    if (mode == cnt == MAX_ITERATIONS)
+    {
+
+    }
 }
 
 inline void CountPixel(volatile coord_t* x, volatile coord_t* y, const coord_t* x0,
@@ -82,6 +87,11 @@ inline void CountPixel(volatile coord_t* x, volatile coord_t* y, const coord_t* 
             {
                 image.setPixel(xi + num, yi, sf::Color((cnt*10) % 256, 0, (255-cnt) / 3));
             }
+        }
+
+        if (mode == GRAPHICS && cnt == MAX_ITERATIONS - 1)
+        {
+            image.setPixel(xi + num, yi, sf::Color::Black);
         }
     }
 }
