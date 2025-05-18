@@ -19,14 +19,22 @@ To create .out file, write to the terminal from "Mandelbrot" folder:
 
 Now you have a file **mandelbrot.out**. The program can be run with different arguments depending on your needs:
 
-1. **First argument - mode:** the program supports 2 modes - graphics for visualization (`--graphics`) and calculation for measuring FPS (`--calculation`)
+1. **First argument - mode:** the program supports 2 modes - graphics for visualization (`--graphics`) and calculation for measuring number of cycles for calculating 1 frame (`--calculation`).
 
 2. **Second argument - method:** the points can be calculated in 3 ways - simple calculating (`--simple`), array handling(`--array`), and calculating using SIMD (`--simd`)
+
+3. **Third argument - number of iterations (only for calculation mode):** the proogram calculates X frames and finds the average value. E.g.: `100` to repeat the calculations 100 times
 
 **E.g.** If you want to visualize the Mandelbrot set using SIMD for calculations:
 
 ```bash
     ./mandelbrot.out --graphics --simd
+```
+
+And if you want to calculate the number of cycles using the simple method, 100 iterations:
+
+```bash
+    ./mandelbrot.out --calculation --simple 100
 ```
 
 ## Graphics navigation
