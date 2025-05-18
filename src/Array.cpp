@@ -1,15 +1,7 @@
 #include "../include/Calculations.h"
 
-int ArrayCalc(const int mode, const scale_t scale, sf::Image& image, fps_t* fps)
+int ArrayCalc(const int mode, const scale_t scale, sf::Image& image)
 {
-    if (!fps)
-    {
-        fprintf(stderr, "ArrayCalc() error: &fps = %p\n", fps);
-        return ERROR;
-    }
-
-    fps->start = clock();
-
     for (coord_t yi = 0; yi < HEIGHT; ++yi)
     {
         coord_t yi0[ARR_SIZE] = {};
@@ -29,13 +21,6 @@ int ArrayCalc(const int mode, const scale_t scale, sf::Image& image, fps_t* fps)
             CountArray(xi0, yi0, xi, yi, mode, image);
         }
     }
-
-    fps->finish = clock();
-
-    fps->total_time += fps->finish - fps->start;
-    (fps->nframes)++;
-
-    if (mode == CALCULATIONS && fps->total_time < MIN_TIME) ArrayCalc(mode, scale, image, fps);
 
     return OK;
 }
@@ -60,11 +45,6 @@ inline void CountArray(const coord_t* x0, const coord_t* y0, const coord_t xi, c
         {
             CountPixel(x, y, x0, y0, xi, yi + i, i, &mask, cnt, mode, image);
         }
-    }
-
-    if (mode == cnt == MAX_ITERATIONS)
-    {
-
     }
 }
 

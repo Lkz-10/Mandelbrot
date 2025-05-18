@@ -1,15 +1,7 @@
 #include "../include/Calculations.h"
 
-int SimpleCalc(const int mode, const scale_t scale, sf::Image& image, fps_t* fps)
+int SimpleCalc(const int mode, const scale_t scale, sf::Image& image)
 {
-    if (!fps)
-    {
-        fprintf(stderr, "SimpleCalc() error: &fps = %p\n", fps);
-        return ERROR;
-    }
-
-    fps->start = clock();
-
     for (coord_t yi = 0; yi < HEIGHT; ++yi)
     {
         for (coord_t xi = 0; xi < WIDTH; ++xi)
@@ -39,13 +31,6 @@ int SimpleCalc(const int mode, const scale_t scale, sf::Image& image, fps_t* fps
             image.setPixel(xi, yi, sf::Color((i*10) % 256, 0, (255-i) / 3));
         }
     }
-
-    fps->finish = clock();
-
-    fps->total_time += fps->finish - fps->start;
-    (fps->nframes)++;
-
-    if (mode == CALCULATIONS && fps->total_time < MIN_TIME) SimpleCalc(mode, scale, image, fps);
 
     return OK;
 }

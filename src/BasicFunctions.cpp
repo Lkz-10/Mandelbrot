@@ -2,7 +2,7 @@
 
 int ArgCheck(const int argc)
 {
-    if (argc < 2)
+    if (argc < ARGC_MIN)
     {
         fprintf(stderr, "Too few arguments for main()\n");
         return ERROR;
@@ -26,7 +26,7 @@ int ScaleCtor(scale_t* scale)
     return OK;
 }
 
-int SetMode(const char** argv, struct lab_mode_t* lab_mode)
+int SetMode(const int argc, const char** argv, lab_mode_t* lab_mode, cycles_t* cycles)
 {
     if (!argv || !lab_mode)
     {
@@ -41,6 +41,21 @@ int SetMode(const char** argv, struct lab_mode_t* lab_mode)
     else if (strcmp(argv[1], "--calculation") == 0)
     {
         lab_mode->mode = CALCULATIONS;
+
+        if (argc < ARGC_MIN + 1)
+        {
+            fprintf(stderr, "Need number of frames to calculate\n");
+            return ERROR;
+        }
+
+        char* end_of_string = NULL;
+        cycles->nframes_max = (int) strtol(argv[3], &end_of_string, 10);
+
+        if (*end_of_string != '\0')
+        {
+            fprintf(stderr, "Wrong number of frames to calculate\n");
+            return ERROR;
+        }
     }
     else
     {
@@ -69,7 +84,7 @@ int SetMode(const char** argv, struct lab_mode_t* lab_mode)
     return OK;
 }
 
-int HandleGraphics(scale_t* scale, fps_t* fps, const lab_mode_t lab_mode, sf::Image& image)
+int HandleGraphics(scale_t* scale, const lab_mode_t lab_mode, sf::Image& image)
 {
     image.create(WIDTH, HEIGHT, sf::Color::Black);
 
@@ -88,7 +103,7 @@ int HandleGraphics(scale_t* scale, fps_t* fps, const lab_mode_t lab_mode, sf::Im
             }
         }
 
-        if (Calculate(&lab_mode, *scale, image, fps) != OK) return ERROR;
+        if (Calculate(&lab_mode, *scale, image) != OK) return ERROR;
 
         sf::Texture texture;
         texture.loadFromImage(image);
@@ -163,7 +178,7 @@ int MoveImage(int key, scale_t* scale)
     return OK;
 }
 
-int Calculate(const lab_mode_t* lab_mode, const scale_t scale, sf::Image& image, fps_t* fps)
+int Calculate(const lab_mode_t* lab_mode, const scale_t scale, sf::Image& image)
 {
     if (!lab_mode)
     {
@@ -175,19 +190,19 @@ int Calculate(const lab_mode_t* lab_mode, const scale_t scale, sf::Image& image,
     {
         case SIMPLE:
         {
-            SimpleCalc(lab_mode->mode, scale, image, fps);
+            SimpleCalc(lab_mode->mode, scale, image);
             break;
         }
 
         case ARRAY:
         {
-            ArrayCalc(lab_mode->mode, scale, image, fps);
+            ArrayCalc(lab_mode->mode, scale, image);
             break;
         }
 
         case SIMD:
         {
-            SIMDCalc(lab_mode->mode, scale, image, fps);
+            SIMDCalc(lab_mode->mode, scale, image);
             break;
         }
 

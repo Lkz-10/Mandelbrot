@@ -1,16 +1,8 @@
 #include "../include/Calculations.h"
 
-int SIMDCalc(const int mode, const scale_t scale, sf::Image& image, fps_t* fps)
+int SIMDCalc(const int mode, const scale_t scale, sf::Image& image)
 {
-    if (!fps)
-    {
-        fprintf(stderr, "SIMDCalc() error: &fps = %p\n", fps);
-        return ERROR;
-    }
-
     __m128 _R0_2 = _mm_set_ps1(R0_2);
-
-    fps->start = clock();
 
     for (coord_t yi = 0; yi < HEIGHT; ++yi)
     {
@@ -78,12 +70,6 @@ int SIMDCalc(const int mode, const scale_t scale, sf::Image& image, fps_t* fps)
             }
         }
     }
-
-    fps->finish = clock();
-    fps->total_time += fps->finish - fps->start;
-    (fps->nframes)++;
-
-    if (mode == CALCULATIONS && fps->total_time < MIN_TIME) SIMDCalc(mode, scale, image, fps);
 
     return OK;
 }

@@ -5,24 +5,33 @@ int main(const int argc, const char** argv)
     if (ArgCheck(argc) != OK) return ERROR;
 
     struct scale_t      scale    = {};
-    struct fps_t        fps      = {};
+    struct cycles_t     cycles   = {};
     struct lab_mode_t   lab_mode = {};
 
     if (ScaleCtor(&scale) != OK) return ERROR;
 
     sf::Image image;
 
-    if (SetMode(argv, &lab_mode) != OK) return ERROR;
+    if (SetMode(argc, argv, &lab_mode, &cycles) != OK) return ERROR;
 
     if (lab_mode.mode == GRAPHICS)
     {
-        if (HandleGraphics(&scale, &fps, lab_mode, image) != OK) return ERROR;
+        if (HandleGraphics(&scale, lab_mode, image) != OK) return ERROR;
     }
     else
     {
-        if (Calculate(&lab_mode, scale, image, &fps) != OK) return ERROR;
+        for (int i = 0; i < cycles.nframes_max; ++i)
+        {
+            cycles.start = _rdtsc();
 
-        std::cout << "FPS = " << fps.nframes * (coord_t)CLOCKS_PER_SEC / (coord_t)(fps.total_time) << std::endl;
+            if (Calculate(&lab_mode, scale, image) != OK) return ERROR;
+
+            cycles.finish        = _rdtsc();
+            cycles.total_cycles += cycles.finish - cycles.start;
+            cycles.nframes++;
+        }
+
+        std::cout << (double)(cycles.total_cycles) / (double)(cycles.nframes) << " cycles" << std::endl;
     }
 
     return 0;
